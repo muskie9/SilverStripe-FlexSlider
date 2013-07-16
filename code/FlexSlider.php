@@ -11,7 +11,7 @@ class FlexSlider extends DataExtension {
 	);
 	
 	static $has_many = array(
-		'Slides' => 'SlideImage'
+		'Slides' => 'Slide'
 	);
 	
 	static $defaults = array(
