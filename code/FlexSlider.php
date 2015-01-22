@@ -2,18 +2,18 @@
 
 class FlexSlider extends DataExtension {
 
-	static $db = array(
+	private static $db = array(
 		'Animation' => "Enum('slide, fade', 'slide')",
 		'Loop' => 'Boolean',
 		'Animate' => 'Boolean',
 		'ThumbnailNav' => 'Boolean'
 	);
 
-	static $has_many = array(
+	private static $has_many = array(
 		'Slides' => 'SlideImage'
 	);
 
-	static $defaults = array(
+	private static $defaults = array(
 		'Loop' => '1',
 		'Animate' => '1'
 	);
@@ -21,10 +21,9 @@ class FlexSlider extends DataExtension {
 	public function populateDefaults() {
 		parent::populateDefaults();
 
-		$this->owner->SliderWidth = 640;
-		$this->owner->SliderHeight = 400;
 		$this->Loop = 1;
 		$this->Animate = 1;
+
 	}
 
 	public function updateCMSFields(FieldList $fields) {
@@ -60,17 +59,11 @@ class FlexSlider extends DataExtension {
 
 	}
 
-	function contentcontrollerInit($controller) {
-		//Requirements::javascript('framework/thirdparty/jquery/jquery.min.js');
-
-	}
-
 	public function SlideShow() {
 
 		$slides = $this->owner->Slides()->filter(array('ShowSlide'=>1))->sort('SortOrder');
-
 		return $slides;
-		//return $slides->renderWith('FlexSlider');
+
 	}
 
 }
