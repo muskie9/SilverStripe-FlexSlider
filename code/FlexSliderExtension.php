@@ -5,10 +5,13 @@ class FlexSliderExtension extends Extension
     public function onAfterInit()
     {
 
+        Requirements::javascript(THIRDPARTY_DIR . '/jquery/jquery.js');
+
         // Flexslider options
         $animate = ($this->owner->Animate) ? 'true' : 'false';
+        $animation = '"'.$this->owner->Animation.'"';
         $loop = ($this->owner->Loop) ? 'true' : 'false';
-        $sync = ($this->owner->ThumbnailNav == true) ? "sync: '#carousel'," : '';
+        $sync = ($this->owner->ThumbnailNav == true) ? "#carousel" : '""';
         $before = (method_exists($this->owner->ClassName, 'flexSliderBeforeAction'))
             ? $this->owner->flexSliderBeforeAction()
             : 'function(){}';
@@ -22,29 +25,18 @@ class FlexSliderExtension extends Extension
         // only call custom script if page has Slides and DataExtension
         if (Object::has_extension($this->owner->data()->ClassName, 'FlexSlider')) {
             if ($this->owner->data()->Slides()->exists()) {
-                Requirements::customScript("
-                (function($) {
-                    $(document).ready(function(){
-                        $('.flexslider').flexslider({
-                            slideshow: ".$animate.",
-                            animation: '".$this->owner->Animation."',
-                            animationLoop: ".$loop.",
-                            controlNav: true,
-                            directionNav: true,
-                            prevText: '',
-                            nextText: '',
-                            pauseOnAction: true,
-                            pauseOnHover: true,
-                            ".$sync."
-                            start: function(slider){
-                              $('body').removeClass('loading');
-                            },
-                            before: ".$before.',
-                            after: '.$after.',
-                            slideshowSpeed: '.$speed.'
-                        });
-                    });
-                }(jQuery));');
+                Requirements::customScript(<<<JS
+                  var flexSliderAnimate = {$animate},
+                      flexSliderAnimation = {$animation},
+                      flexSliderLoop = {$loop},
+                      flexSliderSync = {$sync},
+                      flexSliderBeforeCallback = {$before},
+                      flexSliderAfterCallback = {$after},
+                      flexSliderSpeed = {$speed};
+JS
+                );
+
+                Requirements::javascript(FLEXSLIDER_DIR . '/javascript/init.js');
             }
         }
     }
